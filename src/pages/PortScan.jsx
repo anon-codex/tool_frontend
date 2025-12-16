@@ -20,9 +20,10 @@ const PortScan = () => {
   const refer = useRef(null);
 
   const cancel_req = async () => {
+    // console.log("hit cancel request")
     try {
-      await axios.get(`${api_url}/cancel?flag=false`);
       setTrace(true);
+      await axios.post(`${api_url}/cancel`);
     } catch (error) {
       console.log("My error ", error);
       return;
@@ -40,14 +41,14 @@ const PortScan = () => {
         `${api_url}/port?ip=${value}`
       );
       // console.log("only ",result.response.data);
-      console.log(result.data.data);
+      // console.log(result.data.data);
       // refer.current.style.display = "none";
       refer.current.style.display = "none";
       setTrace(true);
       setData(result.data.data);
     } catch (error) {
       refer.current.style.display = "none";
-      console.log(error.response.data);
+      // console.log(error.response.data);
       setTrace(true);
       setMsg(error.response.data.data.msg);
  
@@ -86,10 +87,10 @@ const PortScan = () => {
           />
           <button
             onClick={() => {
-              if (trace === true) {
-                sendRequest();
-              } else {
+              if (!trace) {
                 cancel_req();
+              } else {
+                sendRequest();
               }
             }}
             className="cursor-pointer"
