@@ -1,0 +1,18 @@
+::placeholder {
+  color: #38dca0;
+  opacity: 7; /* Firefox */
+}
+
+/* HTML: <div class="loader"></div> */
+.loader{
+    border-radius: 10px;
+  width: 120px;
+  height: 20px;
+  background:
+   linear-gradient(green 0 0) 0/0% no-repeat
+   #ddd;
+  animation: l1 2s infinite linear;
+}
+@keyframes l1 {
+    100% {background-size:100%}
+}
