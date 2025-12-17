@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { IoMdSearch } from "react-icons/io"
 import axios from "axios"
 import dog from "../assets/osm.webp"
@@ -40,6 +40,11 @@ const Subdomain = () => {
     }
   };
 
+  useEffect(() => {
+       fetch(`${api_url}/sleep`);
+  },[])
+  
+
   const sendRequest = async () => {
     if (!value || value.trim() == "") return;
     setData([]);
@@ -59,7 +64,7 @@ const Subdomain = () => {
       raw = JSON.parse(raw);
       const final_data = JSON.parse(raw);
       if (final_data.success === false) {
-        console.log("false trigged huaa hai");
+        // console.log("false trigged huaa hai");
         refd.current.style.display = "none";
         setMsg(final_data.msg);
         setTrace(true);
@@ -71,7 +76,7 @@ const Subdomain = () => {
     };
 
     eventSource.addEventListener("end", () => {
-      console.log("Scan completed");
+      // console.log("Scan completed");
       eventSource.close();
       refd.current.style.display = "none";
     setTrace(true);
@@ -80,7 +85,7 @@ const Subdomain = () => {
 
     eventSource.onerror = () => {
       refd.current.style.display = "none";
-      console.log("Error in stream");
+      // console.log("Error in stream");
       eventSource.close();
     };
   };
