@@ -15,12 +15,23 @@ const Subdomain = () => {
   const [msg, setMsg] = useState("");
   const [flag, setFlag] = useState(null);
   const [buttonTrace, setButtonTrace] = useState(false);
-
+  const [fastScan, setFastScan] = useState(false);
+  const [checkBox, setCheckBox] = useState("checkbox");
   // set the flag
   const setReqFlag = () => {
-    console.log("click");
-    console.log("value is ",value);
+    // console.log("click");
+    // console.log("value is ", value);
     setButtonTrace((prev) => !prev);
+  };
+
+  const setReqFlagFast = () => {
+    if (fastScan === false) {
+      setCheckBox("");
+      setFastScan(true);
+    } else {
+      setCheckBox("checkbox");
+      setFastScan(false);
+    }
   };
 
   useEffect(() => {
@@ -71,7 +82,7 @@ const Subdomain = () => {
     setTrace(true);
     refd.current.style.display = "block";
     const eventSource = new EventSource(
-      `${api_url}/subdomain?domainName=${value}&flag=${flag}`
+      `${api_url}/subdomain?domainName=${value}&flag=${flag}&fastScan=${fastScan}`
     );
 
     setStream(eventSource);
@@ -127,15 +138,15 @@ const Subdomain = () => {
           </span>
         </div>
         <div className="w-full flex justify-center items-center gap-4">
-          <input 
+          <input
             onChange={(e) => {
-              setValue(e.target.value);
+              setValue(e.target.value.trim(" "));
             }}
-            style={{ border: "2px solid green", color:"#8b10cd"}}
+            style={{ border: "2px solid green", color: "#8b10cd" }}
             className="outline-none w-[40vw] p-1.5 pl-3 rounded-2xl text-2xl"
             type="text"
             placeholder="Search domain :- google.com"
-            value={`${value.trim()}${flag ? " " + flag : ""}`}
+            value={value && flag ? `${value} ${flag}` : value}
           />
           <button
             onClick={() => {
@@ -163,12 +174,12 @@ const Subdomain = () => {
         {show_Message_Img()}
       </div>
       <div className="w-1/2 flex gap-2">
-        {/*disabled={trace ? true : false}*/}
+        {/*disabled={trace ? true : false} And set status-code*/}
         <label className="inline-flex items-center cursor-pointer">
           <input
-            disabled={trace || value == "" ? true : false}
+            disabled={trace || value == "" || fastScan ? true : false}
             onChange={setReqFlag}
-            type="checkbox"
+            type={checkBox}
             className="sr-only peer focus:outline-none focus:ring-0"
           />
 
@@ -200,14 +211,53 @@ const Subdomain = () => {
             status-code
           </span>
         </label>
+
+        {/*disabled={trace ? true : false} And set Fast-scan*/}
+        <label className="inline-flex items-center cursor-pointer">
+          <input
+            disabled={trace || value == "" ? true : false}
+            onChange={setReqFlagFast}
+            type="checkbox"
+            className="sr-only peer focus:outline-none focus:ring-0"
+          />
+
+          <div
+            className="
+      relative w-9 h-5
+      rounded-full
+      bg-gray-600
+      transition-colors duration-300
+      border-2 border-red-400
+
+      peer-checked:bg-brand
+      peer-disabled:bg-gray-200
+      peer-disabled:cursor-not-allowed
+
+      peer-focus:outline-none
+      peer-focus:ring-0
+
+      after:content-['']
+      after:absolute after:top-[2px] after:left-[2px]
+      after:h-4 after:w-4
+      after:bg-white after:rounded-full
+      after:transition-transform duration-300
+      peer-checked:after:translate-x-4
+    "
+          ></div>
+
+          <span className="select-none ms-3 text-sm font-medium text-heading">
+            Fast-scan
+          </span>
+        </label>
       </div>
+
       <div
         style={{
           border: "2px solid green",
           marginTop: "20px",
           padding: "0px 100px",
         }}
-        className="w-1/2 flex flex-col gap-2 p-3"
+        className="w-1/2 flex flex-col gap-2 p-3 mb-5 pb-5"
       >
         {/* result */}
         <span className="text-2xl">Result</span>
@@ -215,7 +265,7 @@ const Subdomain = () => {
           return (
             <div
               key={index}
-              style={{ fontSize: "130%" }}
+              style={{ fontSize: "130%"}}
               className="flex gap-2"
             >
               <span>Live :- </span>
